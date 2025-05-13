@@ -3,6 +3,9 @@
 ![Python](https://img.shields.io/badge/Python-3.13+-blue?style=flat-square&logo=python)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.45+-red?style=flat-square&logo=streamlit)
 ![Google](https://img.shields.io/badge/Google-Gemini--2.0--Flash-green?style=flat-square&logo=google)
+[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat&logo=github)](CONTRIBUTING.md)
 
 An innovative AI-powered tool crafted to evaluate resumes and provide tailored, actionable insights, empowering job seekers to refine their applications.
 
