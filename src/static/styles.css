@@ -135,22 +135,6 @@
     transform: translateY(0);
 }
 
-/* Results Section */
-.results-section {
-    background-color: var(--card-bg);
-    padding: 1.5rem;
-    border-radius: var(--border-radius);
-    border-left: 4px solid var(--accent-color);
-    margin-top: 2rem;
-    box-shadow: var(--shadow);
-}
-
-.results-section h3 {
-    color: var(--primary-color);
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    margin-bottom: 1rem;
-}
 
 /* Tabs styling */
 .stTabs [data-baseweb="tab-list"] {
