@@ -46,18 +46,19 @@ def main():
     # Main application logic
     if analyze and uploaded_file:
         try:
+            # Extract text from the uploaded file first
+            file_content = extract_text_from_file(uploaded_file)
+            # Make sure to show error and stop execution for empty files
+            if not file_content or not file_content.strip():
+                st.error("⚠️ File does not have any content...")
+                st.stop()
+
             with st.spinner("Analyzing your resume... This may take a moment."):
                 # Show progress bar
                 progress_bar = st.progress(0)
 
-                # Extract text from the uploaded file
                 st.info("📄 Extracting text from your resume...")
-                file_content = extract_text_from_file(uploaded_file)
                 progress_bar.progress(30)
-
-                if not file_content.strip():
-                    st.error("⚠️ File does not have any content...")
-                    st.stop()
 
                 # Show file info
                 file_info = f"File: {uploaded_file.name} ({round(len(file_content) / 1024, 2)} KB of text extracted)"
@@ -69,36 +70,62 @@ def main():
                 if job_role:
                     st.info(f"🎯 Tailoring analysis for: {job_role}")
 
-                analysis_result = analyze_resume(file_content, job_role)
-                progress_bar.progress(100)
+                try:
+                    # Process the resume with the AI service
+                    analysis_result = analyze_resume(file_content, job_role)
+                    progress_bar.progress(100)
+
+                    # Check if the result contains error info
+                    if "Error Encountered" in analysis_result:
+                        st.warning("⚠️ Analysis completed with limited functionality")
+
+                except ValueError as e:
+                    st.error(f"Configuration Error: {str(e)}")
+                    st.error(
+                        "Please check your .env file and make sure the OPENROUTER_API_KEY is set correctly."
+                    )
+
+                    # Provide a fallback result instead of stopping
+                    analysis_result = f"""
+                    # Resume Analysis (Offline Mode)
+                    
+                    We couldn't connect to our AI service due to a configuration error: {str(e)}
+                    
+                    ## General Resume Tips
+                    1. Use clear, concise language to describe your experience
+                    2. Quantify achievements with metrics when possible 
+                    3. Tailor your resume for each job application
+                    4. Ensure proper formatting and organization
+                    5. Proofread carefully for errors
+                    
+                    Please check your API key configuration and try again.
+                    """
+                    progress_bar.progress(100)
+
+                except Exception as e:
+                    st.error(f"An error occurred during analysis: {str(e)}")
+
+                    # Provide a fallback result
+                    analysis_result = f"""
+                    # Resume Analysis (Offline Mode)
+                    
+                    We encountered an unexpected error: {str(e)}
+                    
+                    ## General Resume Tips
+                    1. Use clear, concise language to describe your experience
+                    2. Quantify achievements with metrics when possible
+                    3. Tailor your resume for each job application
+                    4. Ensure proper formatting and organization
+                    5. Proofread carefully for errors
+                    
+                    Please try again later.
+                    """
+                    progress_bar.progress(100)
 
                 # Display results
-                st.markdown('<div class="results-section">', unsafe_allow_html=True)
                 st.markdown("### 📊 Analysis Results")
 
-                # Add tabs for different sections of the analysis
-                tabs = st.tabs(
-                    ["📝 Full Analysis", "✨ Key Strengths", "🔧 Areas to Improve"]
-                )
-
-                with tabs[0]:
-                    st.markdown(analysis_result)
-
-                with tabs[1]:
-                    st.markdown("#### Key Strengths Identified")
-                    st.info(
-                        "This tab would normally show extracted strengths from the analysis. For now, it shows the same full analysis."
-                    )
-                    st.markdown(analysis_result)
-
-                with tabs[2]:
-                    st.markdown("#### Areas for Improvement")
-                    st.warning(
-                        "This tab would normally show improvement suggestions from the analysis. For now, it shows the same full analysis."
-                    )
-                    st.markdown(analysis_result)
-
-                st.markdown("</div>", unsafe_allow_html=True)
+                st.markdown(analysis_result)
 
                 # Add download button for results
                 st.download_button(

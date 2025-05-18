@@ -3,7 +3,7 @@ Text extraction utilities for different file formats.
 """
 
 import io
-import PyPDF2
+from pypdf import PdfReader
 from docx import Document
 
 
@@ -17,10 +17,12 @@ def extract_text_from_pdf(pdf_file):
     Returns:
         str: Extracted text from the PDF
     """
-    pdf_reader = PyPDF2.PdfReader(pdf_file)
+    pdf_reader = PdfReader(pdf_file)
     text = ""
     for page in pdf_reader.pages:
-        text += page.extract_text() + "\n"
+        page_text = page.extract_text()
+        if page_text:  # Only add non-empty text
+            text += page_text + "\n"
     return text
 
 
@@ -54,9 +56,14 @@ def extract_text_from_file(uploaded_file):
     # Get the file content
     file_content = uploaded_file.read()
 
+    # Reset the file pointer for potential reuse
+    if hasattr(uploaded_file, 'seek'):
+        uploaded_file.seek(0)
+
     # Handle different file types
     if uploaded_file.type == "application/pdf":
-        return extract_text_from_pdf(io.BytesIO(file_content))
+        pdf_file = io.BytesIO(file_content)
+        return extract_text_from_pdf(pdf_file)
 
     elif (
         uploaded_file.type

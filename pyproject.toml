@@ -9,7 +9,7 @@ authors = [{ name = "Ryzhaiev Serhii", email = "rsp89.we@gmail.com" }]
 
 dependencies = [
     "openai>=1.78.0", # OpenAI API client
-    "pypdf2>=3.0.1", # PDF reader
+    "pypdf>=5.5.0", # PDF reader
     "python-docx>=1.1.2", # Microsoft Word reader
     "python-dotenv>=1.1.0", # Read environment variables
     "streamlit>=1.45.0", # Web application framework
