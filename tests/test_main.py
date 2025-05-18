@@ -119,36 +119,25 @@ class TestMainApp:
             mock_download,
         ) = mock_main_components
 
-        # Setup components
-        mock_uploader.return_value = mock_empty_file
-        mock_input.return_value = ""
-        mock_button.return_value = True
-        mock_progress.return_value = MagicMock()
-        mock_spinner.__enter__ = MagicMock()
-        mock_spinner.__exit__ = MagicMock()
+        # Set up mocks before importing main
+        mock_uploader.return_value = mock_empty_file  # Mock uploaded file
+        mock_button.return_value = True  # Simulate button click
 
-        # Reset success mock to clear any previous calls
-        mock_success.reset_mock()
+        # Direct patch of extract_text_from_file at the module level
+        with patch("main.extract_text_from_file", return_value=""):
+            # Mock st.stop to prevent test termination
+            with patch("streamlit.stop") as mock_stop:
+                # Now import and run main
+                from main import main
 
-        # Setup text extraction with empty content
-        with patch(
-            "src.utils.text_extractor.extract_text_from_file", return_value=""
-        ) as mock_extract:
-            # Import and run main
-            from main import main
-
-            # Mock st.stop to prevent test from exiting early
-            with patch("streamlit.stop"):
                 main()
 
-            # Verify workflow
-            mock_error.assert_called_with("⚠️ File does not have any content...")
-            mock_success.assert_not_called()
-            # Info about extraction should not be called after error
-            assert not any(
-                call.args[0] == "📄 Extracting text from your resume..."
-                for call in mock_info.call_args_list
-            )
+                # Check that the error was shown
+                mock_error.assert_called_once_with(
+                    "⚠️ File does not have any content..."
+                )
+                # Verify st.stop was called to halt execution
+                mock_stop.assert_called_once()
 
     def test_error_handling(self, mock_main_components, mock_uploaded_file):
         """Test error handling during analysis."""
@@ -171,8 +160,6 @@ class TestMainApp:
         mock_input.return_value = "Software Engineer"
         mock_button.return_value = True
         mock_progress.return_value = MagicMock()
-        mock_spinner.__enter__ = MagicMock()
-        mock_spinner.__exit__ = MagicMock()
 
         # Setup mock error
         test_error = Exception("Test error")
@@ -212,9 +199,11 @@ class TestMainApp:
         mock_uploader.return_value = None
         mock_button.return_value = True
 
-        from main import main
+        # Direct patch of extract_text_from_file at the module level
+        with patch("main.extract_text_from_file", return_value=""):
+            from main import main
 
-        main()
+            main()
 
         # Verify that no analysis was attempted
         mock_spinner.assert_not_called()

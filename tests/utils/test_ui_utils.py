@@ -63,29 +63,27 @@ class TestUIUtils:
     def test_setup_sidebar(self):
         """Test setting up sidebar."""
         with patch("src.utils.ui_utils.st") as mock_st:
-            # Create a new mock for the sidebar context
+            # Create sidebar mock
             mock_sidebar = MagicMock()
             mock_st.sidebar = mock_sidebar
 
             # Call the function under test
             setup_sidebar()
 
-            # Verify image call
+            # Verify sidebar content was added correctly
             mock_sidebar.image.assert_called_once_with(
                 "https://img.icons8.com/fluency/96/resume.png", width=80
             )
-
-            # Verify title call
             mock_sidebar.title.assert_called_once_with("Resume Analyzer")
 
             # Verify markdown calls
             markdown_calls = mock_sidebar.markdown.call_args_list
-            markdown_contents = [call[0][0] for call in markdown_calls]
+            markdown_texts = [args[0][0] for args in markdown_calls]
 
-            # Verify section headers are present
-            assert any("### About" in content for content in markdown_contents)
-            assert any("### Features" in content for content in markdown_contents)
-            assert any("### Need Help?" in content for content in markdown_contents)
+            assert "---" in markdown_texts
+            assert "### About" in markdown_texts
+            assert "### Features" in markdown_texts
+            assert "### Need Help?" in markdown_texts
 
     @patch("os.path.exists")
     def test_setup_ui_with_css(self, mock_exists):
@@ -104,7 +102,7 @@ class TestUIUtils:
             mock_page_config.assert_called_once()
             mock_gradient.assert_called_once()
             mock_spinner.assert_called_once()
-            mock_css.assert_called_once_with("static/styles.css")
+            mock_css.assert_called_once_with("src/static/styles.css")
             mock_sidebar.assert_called_once()
 
     @patch("os.path.exists")
