@@ -1,5 +1,20 @@
 # CHANGELOG
 
+
+## v0.1.1 (2025-05-19)
+
+### Bug Fixes
+
+- Coverage config and correct package name spelling
+  ([`b9420a1`](https://github.com/RYZHAIEV-SERHII/resume-analyzer/commit/b9420a186c2fbff016ba32a074d40b3a07f2498e))
+
+Updates coverage configuration to use settings from pyproject.toml and fixes typo in package name
+  from "analizer" to "analyzer".
+
+Adds coverage package as explicit dependency to ensure consistent test coverage reporting across
+  environments.
+
+
 ## v0.1.0 (2025-05-19)
 
 ### Features
