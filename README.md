@@ -4,6 +4,9 @@
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.45+-red?style=flat-square&logo=streamlit)
 ![Google](https://img.shields.io/badge/Google-Gemini--2.0--Flash-green?style=flat-square&logo=google)
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
+[![Tests](https://github.com/RYZHAIEV-SERHII/resume-analyzer/actions/workflows/tests.yml/badge.svg)](https://github.com/RYZHAIEV-SERHII/resume-analyzer/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat&logo=github)](CONTRIBUTING.md)
 
@@ -24,7 +27,8 @@ An innovative AI-powered tool crafted to evaluate resumes and provide tailored, 
 
 ## 🖼️ Screenshot
 
-![AI Resume Analyzer Screenshot](https://via.placeholder.com/800x450.png?text=AI+Resume+Analyzer+Screenshot)
+![AI Resume Analyzer Screenshot](src/static/screenshot.png)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://a1-resume-analyzer.streamlit.app/)
 
 ## 🚀 Installation
 
