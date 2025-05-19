@@ -1,0 +1,117 @@
+# Workflow for automated releases, including version management, building, and publishing
+name: Release
+
+# Trigger conditions for the workflow
+on:
+  push:
+    branches:
+      - main  # Runs on every push to main branch
+      - 'rc/*'    # Release candidate branches
+      - 'beta/*'  # Beta release branches
+      - 'alpha/*' # Alpha release branches
+
+# Global environment variables
+env:
+  PACKAGE_NAME: "AI_Resume_Analyzer"  # Used for reference in logs and releases
+  OWNER: "RYZHAIEV-SERHII"  # Repository owner
+
+# List of jobs to run
+jobs:
+  # Single job that handles the entire release process
+  release:
+    runs-on: ubuntu-latest
+
+    # Prevent concurrent releases to avoid version conflicts
+    concurrency:
+      group: ${{ github.workflow }}-release-${{ github.ref_name }}
+      cancel-in-progress: false
+
+    # Required permissions for the job
+    permissions:
+      contents: write  # Required for creating GitHub releases
+
+    # Environment configuration for PyPI publishing
+    environment:
+      name: release    # Uses 'release' environment secrets
+
+    steps:
+      # Step 1: Check out the repository code
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0  # Full history needed for semantic-release
+
+      # Step 2: Ensure we're at the exact commit that triggered the workflow
+      - name: Force release branch to workflow SHA
+        run: git reset --hard ${{ github.sha }}
+
+      # Step 3: Verify repository state matches the trigger
+      - name: Verify upstream hasn't changed
+        shell: bash
+        run: |
+          set -x  # Enable debug output
+
+          # Handle tag-triggered workflows
+          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            echo "Running from tag: ${{ github.ref_name }}"
+            TAG_SHA=$(git rev-parse ${{ github.ref }})
+            HEAD_SHA=$(git rev-parse HEAD)
+            if [ "$TAG_SHA" != "$HEAD_SHA" ]; then
+              echo "::error::Tag SHA ($TAG_SHA) does not match HEAD SHA ($HEAD_SHA)"
+              exit 1
+            fi
+            echo "Tag verification successful"
+            exit 0
+          fi
+
+          # Handle branch-triggered workflows
+          if [[ "${{ github.ref }}" == refs/heads/* ]]; then
+            echo "Running from branch: ${{ github.ref_name }}"
+            git fetch origin ${{ github.ref_name }}
+            HEAD_SHA=$(git rev-parse HEAD)
+            UPSTREAM_SHA=$(git rev-parse origin/${{ github.ref_name }})
+            if [ "$HEAD_SHA" != "$UPSTREAM_SHA" ]; then
+              echo "::error::Branch HEAD ($HEAD_SHA) does not match upstream ($UPSTREAM_SHA)"
+              exit 1
+            fi
+            echo "Branch verification successful"
+            exit 0
+          fi
+
+          echo "::error::Unexpected ref type: ${{ github.ref }}"
+          exit 1
+
+      # Step 4: Set up Python environment according to pyproject.toml
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: "pyproject.toml"
+
+      # Step 5: Install uv package manager for dependency management
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      # Step 6: Install project dependencies
+      - name: Install dependencies
+        run: uv sync
+
+      # Step 7: Run semantic-release to handle version management and build
+      - name: Action | Semantic Version Release
+        id: release
+        env:
+          # Set environment based on branch
+          PRERELEASE: ${{ contains(github.ref, 'alpha/') || contains(github.ref, 'beta/') || contains(github.ref, 'rc/') }}
+        uses: python-semantic-release/python-semantic-release@v9.21.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          git_committer_name: "github-actions"
+          git_committer_email: "actions@users.noreply.github.com"
+
+      # Step 8: Upload artifacts to GitHub Releases
+      - name: Publish | Upload to GitHub Release Assets
+        uses: python-semantic-release/publish-action@v9.21.0
+        if: steps.release.outputs.released == 'true'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.release.outputs.tag }}

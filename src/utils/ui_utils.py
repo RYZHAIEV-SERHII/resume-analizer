@@ -82,7 +82,7 @@ def setup_page_config():
 def setup_ui():
     """
     Set up the UI for the Streamlit app.
-    This function handles all UI initialization including sidebar.
+    This function handles all UI elements initialization.
     """
     # Set up page config
     setup_page_config()
@@ -94,8 +94,8 @@ def setup_ui():
     setup_custom_spinner()
 
     # Load custom CSS
-    if os.path.exists("static/styles.css"):
-        load_css_file("static/styles.css")
+    if os.path.exists("src/static/styles.css"):
+        load_css_file("src/static/styles.css")
 
     # Setup sidebar
     setup_sidebar()
@@ -105,30 +105,33 @@ def setup_sidebar():
     """
     Set up the sidebar for the Streamlit app.
     """
-    with st.sidebar:
-        st.image("https://img.icons8.com/fluency/96/resume.png", width=80)
-        st.title("Resume Analyzer")
+    # Safe direct access to sidebar - works in both real app and tests
+    sidebar = st.sidebar
 
-        st.markdown("---")
-        st.markdown("### About")
-        st.markdown("""
-        This tool uses AI to analyze your resume and provide actionable feedback to help you improve it.
+    # Add logo and title
+    sidebar.image("https://img.icons8.com/fluency/96/resume.png", width=80)
+    sidebar.title("Resume Analyzer")
 
-        Powered by Google Gemini 2.0 Flash via OpenRouter.
-        """)
+    sidebar.markdown("---")
+    sidebar.markdown("### About")
+    sidebar.markdown("""
+    This tool uses AI to analyze your resume and provide actionable feedback to help you improve it.
 
-        st.markdown("---")
-        st.markdown("### Features")
-        st.markdown("""
-        - 📄 Supports PDF, DOCX, and TXT formats
-        - 🎯 Job-specific analysis
-        - 🤖 AI-powered feedback
-        - 📊 Comprehensive insights
-        - 🔒 Privacy-focused
-        """)
+    Powered by Google Gemini 2.0 Flash via OpenRouter.
+    """)
 
-        st.markdown("---")
-        st.markdown("### Need Help?")
-        st.markdown(
-            "[Documentation](https://github.com/RYZHAIEV-SERHII/resume-analyzer) | [Report Issues](https://github.com/RYZHAIEV-SERHII/resume-analyzer/issues)"
-        )
+    sidebar.markdown("---")
+    sidebar.markdown("### Features")
+    sidebar.markdown("""
+    - 📄 Supports PDF, DOCX, and TXT formats
+    - 🎯 Job-specific analysis
+    - 🤖 AI-powered feedback
+    - 📊 Comprehensive insights
+    - 🔒 Privacy-focused
+    """)
+
+    sidebar.markdown("---")
+    sidebar.markdown("### Need Help?")
+    sidebar.markdown(
+        "[Documentation](https://github.com/RYZHAIEV-SERHII/resume-analyzer) | [Report Issues](https://github.com/RYZHAIEV-SERHII/resume-analyzer/issues)"
+    )

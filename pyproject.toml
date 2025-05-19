@@ -8,9 +8,230 @@ license = { text = "MIT" }
 authors = [{ name = "Ryzhaiev Serhii", email = "rsp89.we@gmail.com" }]
 
 dependencies = [
-    "openai>=1.78.0",
-    "pypdf2>=3.0.1",
-    "python-docx>=1.1.2",
-    "python-dotenv>=1.1.0",
-    "streamlit>=1.45.0",
+    "openai>=1.78.0", # OpenAI API client
+    "pypdf>=5.5.0", # PDF reader
+    "python-docx>=1.1.2", # Microsoft Word reader
+    "python-dotenv>=1.1.0", # Read environment variables
+    "streamlit>=1.45.0", # Web application framework
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.11.9", # Fast Python linter and formatter
+    "python-semantic-release>=9.21.0", # Versioning and releasing
+    "pre-commit>=4.2.0", # Pre-commit hooks system
+]
+test = [
+    "pytest>=8.0.2",                    # Python testing framework
+    "pytest-cov>=6.0.0"                 # Code coverage reporting
+    ]
+
+
+[project.urls]
+Homepage = "https://github.com/RYZHAIEV-SERHII/resume-analyzer"
+Documentation = "https://github.com/RYZHAIEV-SERHII/resume-analyzer#readme"
+Repository = "https://github.com/RYZHAIEV-SERHII/resume-analyzer.git"
+Issues = "https://github.com/RYZHAIEV-SERHII/resume-analyzer/issues"
+
+[project.scripts]
+portfolio = "main:main"                  # Entry point for running the application
+
+# Build system configuration
+[build-system]
+requires = ["hatchling"]           # Specifies that hatchling is needed for building
+build-backend = "hatchling.build"  # Defines the build backend
+
+# Configuration for wheel package building via hatch
+[tool.hatch.build.targets.wheel]
+packages = ["src"]          # Packages to be included in the wheel
+
+# Version configuration via hatch
+[tool.hatch.version]
+path = "pyproject.toml:version"     # Path to the file where version is stored
+
+
+[tool.ruff]
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+]
+
+# Same as Black.
+line-length = 88
+indent-width = 4
+
+# Assume Python 3.9
+target-version = "py39"
+
+[tool.ruff.lint]
+# Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
+# Unlike Flake8, Ruff doesn't enable pycodestyle warnings (`W`) or
+# McCabe complexity (`C901`) by default.
+select = ["E4", "E7", "E9", "F"]
+ignore = []
+
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+
+# Like Black, automatically detect the appropriate line ending.
+line-ending = "auto"
+
+# Enable auto-formatting of code examples in docstrings. Markdown,
+# reStructuredText code/literal blocks and doctests are all supported.
+#
+# This is currently disabled by default, but it is planned for this
+# to be opt-out in the future.
+docstring-code-format = true
+
+# Set the line length limit used when formatting code snippets in
+# docstrings.
+#
+# This only has an effect when the `docstring-code-format` setting is
+# enabled.
+docstring-code-line-length = "dynamic"
+
+
+# Pytest configuration for testing
+[tool.pytest.ini_options]
+minversion = "8.0"                 # Minimum pytest version
+addopts = "-ra -q --strict-markers --cov-report=term-missing --cov-report=html"  # Pytest run options
+testpaths = ["tests"]              # Test directories
+pythonpath = ["."]                 # Python module import paths
+markers = [
+    "unit: mark a test as a unit test",
+    "integration: mark a test as an integration test",
+]
+
+# Code coverage collection settings
+[tool.coverage.run]
+source = ["src"]                   # Packages to measure coverage
+
+# Coverage report configuration
+[tool.coverage.report]
+exclude_lines = [                  # Line patterns to exclude from analysis
+    "pragma: no cover",            # Lines with 'no cover' directive
+    "def __repr__",                # Repr methods
+    "if self.debug:",              # Debugging code
+    "raise NotImplementedError",   # Stubs for unimplemented methods
+    "if __name__ == .__main__.:",  # Blocks executed on direct run
+    "pass",                        # Empty blocks
+    "raise ImportError",           # Import error handling
+]
+ignore_errors = true               # Ignore errors during report generation
+omit = [                           # Files to exclude from analysis
+    "tests/*",                     # Tests
+    "setup.py",                    # Setup file
+    "config.py",                   # Configuration file
+]
+
+
+# Automated version management configuration
+[tool.semantic_release]
+version_variables = [              # Paths to version variables that need to be updated
+    "pyproject.toml:version"       # Updates version in pyproject.toml
+]
+branch = false                     # Don't create a separate branch for release
+upload_to_pypi = false             # Don't upload package to PyPI
+build_command = "pip install uv && uv build"  # Command for building the project
+dist_path = "dist/"                # Path to the build artifacts directory
+remove_dist = true                 # Remove dist directory before building
+major_on_zero = false              # Don't increment major version at 0.x.x
+tag_format = "{version}"           # Git tag format
+commit_message = "chore(release): bump version to {version}"  # Commit message format
+changelog_file = "CHANGELOG.md"    # File for recording changes between versions
+
+# Commit message parsing configuration
+[tool.semantic_release.commit_parser_options]
+allowed_tags = [                   # Allowed types of changes in commit messages
+    "feat",                        # New features
+    "fix",                         # Bug fixes
+    "perf",                        # Performance improvements
+    "refactor",                    # Code refactoring
+    "style",                       # Style changes
+    "docs",                        # Documentation
+    "test",                        # Tests
+    "ci",                          # CI integration
+    "build",                       # Build system
+    "chore"                        # Other changes
+]
+minor_tags = ["feat"]              # Commit types that trigger minor version increment
+patch_tags = ["fix", "perf"]       # Commit types that trigger patch version increment
+
+# Main branch configuration
+[tool.semantic_release.branches.main]
+match = "main"                     # Pattern for identifying main branch
+prerelease = false                 # Don't consider releases on this branch as prereleases
+prerelease_token = ""              # Prerelease token (not used)
+
+# Release candidate branches configuration
+[tool.semantic_release.branches.rc]
+match = "rc/*"                     # Pattern for identifying RC branches
+prerelease = true                  # Consider releases on these branches as prereleases
+prerelease_token = "rc"            # Prerelease token (rc)
+
+# Beta branches configuration
+[tool.semantic_release.branches.beta]
+match = "beta/*"                   # Pattern for identifying beta branches
+prerelease = true                  # Consider releases on these branches as prereleases
+prerelease_token = "b"             # Prerelease token (b)
+
+# Alpha branches configuration
+[tool.semantic_release.branches.alpha]
+match = "alpha/*"                  # Pattern for identifying alpha branches
+prerelease = true                  # Consider releases on these branches as prereleases
+prerelease_token = "a"             # Prerelease token (a)
+
+# Prerelease tag formats according to PEP 440
+[tool.semantic_release.prerelease_tag_format]
+alpha = "{version}a{prerelease_offset}"         # Format for alpha releases (e.g. 0.6.12a1)
+beta = "{version}b{prerelease_offset}"          # Format for beta releases (e.g. 0.6.12b1)
+rc = "{version}rc{prerelease_offset}"           # Format for RC releases (e.g. 0.6.12rc1)
+
+# CHANGELOG file generation configuration
+[tool.semantic_release.changelog]
+changelog_sections = [             # Sections for changelog and their display
+    ["feat", "Features"],          # Feature commits -> Features section
+    ["fix", "Bug Fixes"],          # Fix commits -> Bug Fixes section
+    ["perf", "Performance"],       # Performance commits -> Performance section
+    ["refactor", "Code Refactoring"], # Refactoring commits -> Code Refactoring section
+    ["docs", "Documentation"],     # Documentation commits -> Documentation section
 ]
