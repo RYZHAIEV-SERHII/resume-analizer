@@ -1,5 +1,5 @@
 [project]
-name = "resume-analizer"
+name = "resume-analyzer"
 version = "0.1.0"
 description = "An innovative AI-powered tool crafted to evaluate resumes and provide tailored, actionable insights, empowering job seekers to refine their applications."
 readme = "README.md"
@@ -23,7 +23,8 @@ dev = [
 ]
 test = [
     "pytest>=8.0.2",                    # Python testing framework
-    "pytest-cov>=6.0.0"                 # Code coverage reporting
+    "pytest-cov>=6.0.0",                # Code coverage reporting
+    "coverage>=7.4.0"                   # Code coverage measurement
     ]
 
 

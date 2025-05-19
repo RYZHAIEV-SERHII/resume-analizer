@@ -30,7 +30,7 @@ jobs:
 
       - name: Run tests with coverage
         run: |
-          uv run pytest tests/ --cov-report=term-missing --cov-report=xml
+          uv run pytest tests/ --cov --cov-config=pyproject.toml --cov-report=xml
         env:
           PYTHONPATH: .
 
