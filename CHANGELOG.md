@@ -1,6 +1,23 @@
 # CHANGELOG
 
 
+## v0.1.2 (2025-05-20)
+
+### Bug Fixes
+
+- Update README structure and correct library reference
+  ([`2352894`](https://github.com/RYZHAIEV-SERHII/resume-analyzer/commit/235289417093e0934ae392daacc860f3cd0a2b09))
+
+Revised the project directory layout in the README for better clarity and added missing files like
+  the test suite and static assets. Also updated the library name from PyPDF2 to pypdf to reflect
+  the correct dependency.
+
+### Documentation
+
+- Updates README with actual screenshot and add new badges
+  ([`8b920a7`](https://github.com/RYZHAIEV-SERHII/resume-analyzer/commit/8b920a7b309295c436f89516a4af4be7e8dec8d2))
+
+
 ## v0.1.1 (2025-05-19)
 
 ### Bug Fixes
