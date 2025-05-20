@@ -78,17 +78,29 @@ Then open your browser at <http://localhost:8501>
 
 ```plaintext
 resume-analyzer/
-├── main.py                 # Entry point for the application
-├── src/                    # Source code
-│   ├── utils/              # Utility functions
-│   │   └── text_extractor.py  # Text extraction from different file formats
-│   └── services/           # Core services
-│       └── ai_analyzer.py  # AI analysis functionality
-├── .env                    # Environment variables (not in repo)
-├── .python-version         # Python version file
-├── pyproject.toml          # Project dependencies
-├── uv.lock                 # UV lock file
-└── README.md               # Project documentation
+├── .env                            # Environment variables
+├── .pre-commit-config.yaml         # Pre-commit hooks configuration
+├── .python-version                 # Python version file
+├── CHANGELOG.md                    # Project changelog
+├── LICENSE                         # MIT license file
+├── README.md                       # Project documentation
+├── main.py                         # Entry point for the application
+├── pyproject.toml                  # Project configuration and dependencies
+├── uv.lock                         # UV lock file
+├── src/                            # Source code
+│   ├── services/                   # Core services
+│   │   └── ai_analyzer.py          # AI analysis functionality
+│   ├── static/                     # Static assets
+│   └── utils/                      # Utility functions
+│       ├── text_extractor.py       # Text extraction from different formats
+│       └── ui_utils.py             # UI helper functions
+└── tests/                          # Test suite
+    ├── conftest.py                 # Test configuration and fixtures
+    ├── services/                   # Service tests
+    │   └── test_ai_analyzer.py
+    └── utils/                      # Utility tests
+        ├── test_text_extractor.py
+        └── test_ui_utils.py
 ```
 
 ## 🛠️ Technologies Used
@@ -96,7 +108,7 @@ resume-analyzer/
 - **Streamlit**: For the web interface
 - **Google Gemini 2.0 Flash**: For AI-powered resume analysis (via OpenRouter)
 - **OpenRouter**: For accessing various AI models
-- **PyPDF2**: For PDF text extraction
+- **pypdf**: For PDF text extraction
 - **python-docx**: For DOCX file processing
 - **UV**: For dependency management
 
